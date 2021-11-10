@@ -1,16 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:online_shop_app/pages/home_page/widgets.dart';
 import 'package:online_shop_app/pages/home_page/data.dart';
+import 'package:provider/provider.dart';
+
+import '../../state.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      backgroundColor: Colors.white,
-      body: SingleChildScrollView(child: Layout()),
-    );
+    return Consumer<ColorModeState>(builder: (context, cart, child) {
+      return Scaffold(
+        backgroundColor: cart.getBackgrundColor(),
+        body: const SingleChildScrollView(child: Layout()),
+      );
+    });
   }
 }
 
@@ -22,11 +27,29 @@ class Layout extends StatelessWidget {
     return Column(
       children: <Widget>[
         const TopProposition(),
-        styledTextSelector(
-            'Categories', 26, FontWeight.w700, Colors.black, 15, 20, 0, 0),
+        Consumer<ColorModeState>(builder: (context, cart, child) {
+          return StyledTextSelector(
+              textContent: 'Categories',
+              fontSizeValue: 26,
+              fontWeightValue: FontWeight.w700,
+              fontColor: cart.getItemColor(),
+              paddingLeft: 30,
+              paddingTop: 20,
+              paddingRight: 0,
+              paddingBottom: 0);
+        }),
         const CategoriesList(),
-        styledTextSelector('Recommendations', 26, FontWeight.w700, Colors.black,
-            15, 20, 0, 20),
+        Consumer<ColorModeState>(builder: (context, cart, child) {
+          return StyledTextSelector(
+              textContent: 'Recommendations',
+              fontSizeValue: 26,
+              fontWeightValue: FontWeight.w700,
+              fontColor: cart.getItemColor(),
+              paddingLeft: 30,
+              paddingTop: 20,
+              paddingRight: 0,
+              paddingBottom: 20);
+        }),
         recommendationsList(recommendationsData),
       ],
     );
@@ -45,11 +68,9 @@ class TopProposition extends StatelessWidget {
         decoration: BoxDecoration(
             image: DecorationImage(
                 fit: BoxFit.cover, image: NetworkImage(topImageUrl))),
-        alignment:
-            Alignment.bottomLeft, // This aligns the child of the container
+        alignment: Alignment.bottomLeft,
         child: Padding(
-            padding: EdgeInsets.fromLTRB(35, screenHeight * 0.36, 0,
-                0), //some spacing to the child from bottom
+            padding: EdgeInsets.fromLTRB(35, screenHeight * 0.36, 0, 0),
             child: InkWell(
               onTap: () {},
               child: Column(

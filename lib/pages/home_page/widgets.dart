@@ -1,29 +1,48 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-styledTextSelector(
-    String textContent,
-    double fontSizeValue,
-    FontWeight fontWeightValue,
-    Color fontColor,
-    double paddingLeft,
-    double paddingTop,
-    double paddingRight,
-    double paddingBottom) {
-  return Align(
-    alignment: Alignment.bottomLeft,
-    child: Padding(
-      padding: EdgeInsets.fromLTRB(
-          paddingLeft, paddingTop, paddingRight, paddingBottom),
-      child: Text(
-        textContent,
-        textAlign: TextAlign.left,
-        style: TextStyle(
-            fontSize: fontSizeValue,
-            fontWeight: fontWeightValue,
-            color: fontColor),
+import '../../state.dart';
+
+class StyledTextSelector extends StatelessWidget {
+  const StyledTextSelector(
+      {Key? key,
+      required this.textContent,
+      required this.fontSizeValue,
+      required this.fontWeightValue,
+      required this.fontColor,
+      required this.paddingLeft,
+      required this.paddingTop,
+      required this.paddingRight,
+      required this.paddingBottom})
+      : super(key: key);
+
+  final String textContent;
+  final double fontSizeValue;
+  final FontWeight fontWeightValue;
+  final Color fontColor;
+  final double paddingLeft;
+  final double paddingTop;
+  final double paddingRight;
+  final double paddingBottom;
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.bottomLeft,
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(
+            paddingLeft, paddingTop, paddingRight, paddingBottom),
+        child: Text(
+          textContent,
+          textAlign: TextAlign.left,
+          style: TextStyle(
+              fontSize: fontSizeValue,
+              fontWeight: fontWeightValue,
+              color: fontColor),
+        ),
       ),
-    ),
-  );
+    );
+  }
 }
 
 categoryCard(String imageUrl, String text) {
@@ -34,14 +53,22 @@ categoryCard(String imageUrl, String text) {
           margin: const EdgeInsets.symmetric(horizontal: 15),
           alignment: Alignment.bottomRight,
           child: ClipRRect(
-            borderRadius: BorderRadius.circular(15.0),
+            borderRadius: const BorderRadius.all(Radius.circular(15)),
             child: Image.network(
               imageUrl,
               height: 200,
             ),
           )),
     ),
-    styledTextSelector(text, 28, FontWeight.normal, Colors.black, 20, 0, 0, 10),
+    StyledTextSelector(
+        textContent: text,
+        fontSizeValue: 28,
+        fontWeightValue: FontWeight.normal,
+        fontColor: Colors.black,
+        paddingLeft: 20,
+        paddingTop: 0,
+        paddingRight: 0,
+        paddingBottom: 10),
   ]);
 }
 
@@ -66,10 +93,26 @@ recomendationsItem({
                   imageUrl,
                   height: 210,
                 )),
-            styledTextSelector(
-                title, 26, FontWeight.normal, Colors.black, 0, 20, 0, 10),
-            styledTextSelector(
-                price, 20, FontWeight.w400, Colors.grey.shade500, 0, 0, 0, 0),
+            Consumer<ColorModeState>(builder: (context, cart, child) {
+              return StyledTextSelector(
+                  textContent: title,
+                  fontSizeValue: 26,
+                  fontWeightValue: FontWeight.normal,
+                  fontColor: cart.getItemColor(),
+                  paddingLeft: 0,
+                  paddingTop: 20,
+                  paddingRight: 0,
+                  paddingBottom: 10);
+            }),
+            StyledTextSelector(
+                textContent: price,
+                fontSizeValue: 20,
+                fontWeightValue: FontWeight.w400,
+                fontColor: Colors.grey.shade500,
+                paddingLeft: 0,
+                paddingTop: 0,
+                paddingRight: 0,
+                paddingBottom: 0),
           ],
         ),
       ),
