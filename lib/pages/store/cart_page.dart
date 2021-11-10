@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:online_shop_app/pages/home_page/widgets.dart';
 import 'package:online_shop_app/pages/store/constant.dart';
 import 'package:online_shop_app/colors/colors.dart';
+import 'package:provider/provider.dart';
+import '../../state.dart';
 
 class CartPage extends StatefulWidget {
   const CartPage({Key? key}) : super(key: key);
@@ -12,10 +15,12 @@ class CartPage extends StatefulWidget {
 class _CartPageState extends State<CartPage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: white,
-      body: getBody(),
-    );
+    return Consumer<ColorModeState>(builder: (context, cart, child) {
+      return Scaffold(
+        backgroundColor: cart.getBackgrundColor(),
+        body: getBody(),
+      );
+    });
   }
 
   Widget getBody() {
@@ -44,37 +49,66 @@ class _CartPageState extends State<CartPage> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          cartList[index]['name'],
-                          style: const TextStyle(fontSize: 22),
-                        ),
+                        Consumer<ColorModeState>(
+                            builder: (context, cart, child) {
+                          return StyledTextSelector(
+                              textContent: 'Suit Versace',
+                              fontSizeValue: 22,
+                              fontWeightValue: FontWeight.w300,
+                              fontColor: cart.getItemColor(),
+                              paddingLeft: 50,
+                              paddingTop: 10,
+                              paddingRight: 0,
+                              paddingBottom: 0);
+                        }),
                         const SizedBox(
                           height: 10,
                         ),
-                        Text(
-                          "ref " + cartList[index]['ref'],
-                          style: TextStyle(
-                              fontSize: 13, color: black.withOpacity(0.7)),
-                        ),
+                        Consumer<ColorModeState>(
+                            builder: (context, cart, child) {
+                          return StyledTextSelector(
+                              textContent: 'ref: 52435848',
+                              fontSizeValue: 13,
+                              fontWeightValue: FontWeight.w300,
+                              fontColor: cart.getItemColor(),
+                              paddingLeft: 50,
+                              paddingTop: 10,
+                              paddingRight: 0,
+                              paddingBottom: 0);
+                        }),
                         const SizedBox(
                           height: 10,
                         ),
-                        Text(
-                          cartList[index]['size'],
-                          style: const TextStyle(
-                            fontSize: 22,
-                          ),
-                        ),
+                        Consumer<ColorModeState>(
+                            builder: (context, cart, child) {
+                          return StyledTextSelector(
+                              textContent: 'size: S',
+                              fontSizeValue: 16,
+                              fontWeightValue: FontWeight.w300,
+                              fontColor: cart.getItemColor(),
+                              paddingLeft: 50,
+                              paddingTop: 10,
+                              paddingRight: 0,
+                              paddingBottom: 0);
+                        }),
                         const SizedBox(
                           height: 40,
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            Text(cartList[index]['price'],
-                                style: const TextStyle(
-                                  fontSize: 22,
-                                )),
+                            Consumer<ColorModeState>(
+                                builder: (context, cart, child) {
+                              return StyledTextSelector(
+                                  textContent: 'price: \$234',
+                                  fontSizeValue: 18,
+                                  fontWeightValue: FontWeight.w300,
+                                  fontColor: cart.getItemColor(),
+                                  paddingLeft: 50,
+                                  paddingTop: 10,
+                                  paddingRight: 0,
+                                  paddingBottom: 0);
+                            }),
                             const SizedBox(
                               width: 20,
                             ),
@@ -101,36 +135,56 @@ class _CartPageState extends State<CartPage> {
           padding: const EdgeInsets.only(left: 30, right: 30),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: const [
-              Text(
-                "Delivery",
-                style: TextStyle(fontSize: 16),
-              ),
-              Text(
-                "Standard - Free",
-                style: TextStyle(fontSize: 16),
-              )
+            children: [
+              Consumer<ColorModeState>(builder: (context, cart, child) {
+                return StyledTextSelector(
+                    textContent: 'Delivery',
+                    fontSizeValue: 18,
+                    fontWeightValue: FontWeight.w300,
+                    fontColor: cart.getItemColor(),
+                    paddingLeft: 50,
+                    paddingTop: 10,
+                    paddingRight: 0,
+                    paddingBottom: 0);
+              }),
+              Consumer<ColorModeState>(builder: (context, cart, child) {
+                return StyledTextSelector(
+                    textContent: 'Standard - Free',
+                    fontSizeValue: 18,
+                    fontWeightValue: FontWeight.w300,
+                    fontColor: cart.getItemColor(),
+                    paddingLeft: 50,
+                    paddingTop: 10,
+                    paddingRight: 0,
+                    paddingBottom: 0);
+              }),
             ],
           ),
         ),
         const SizedBox(
           height: 30,
         ),
-        Padding(
-          padding: const EdgeInsets.only(left: 20, right: 20),
-          child: Container(
-            height: 50,
-            width: double.infinity,
-            decoration: BoxDecoration(
-                color: black, borderRadius: BorderRadius.circular(50 / 2)),
-            child: Center(
-              child: Text(
-                "Buy this".toUpperCase(),
-                style:
-                    const TextStyle(color: white, fontWeight: FontWeight.bold),
+        Consumer<ColorModeState>(builder: (context, cart, child) {
+          return Padding(
+            padding: const EdgeInsets.only(left: 20, right: 20),
+            child: Container(
+              height: 50,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                  color: cart.getButtonColor(),
+                  borderRadius: BorderRadius.circular(50 / 2)),
+              child: Center(
+                child: Text(
+                  "Buy this".toUpperCase(),
+                  style: const TextStyle(
+                      color: white, fontWeight: FontWeight.bold),
+                ),
               ),
             ),
-          ),
+          );
+        }),
+        const SizedBox(
+          height: 30,
         )
       ],
     );

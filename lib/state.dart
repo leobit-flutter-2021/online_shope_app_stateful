@@ -24,6 +24,14 @@ class ColorModeState extends ChangeNotifier {
     }
   }
 
+  Color getButtonColor() {
+    if (_darkMode) {
+      return Colors.amberAccent.shade700;
+    } else {
+      return Colors.black;
+    }
+  }
+
   bool darkModeState() {
     return _darkMode;
   }
