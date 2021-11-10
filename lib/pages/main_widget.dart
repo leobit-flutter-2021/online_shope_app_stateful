@@ -61,14 +61,24 @@ class FullSettingsPage extends StatelessWidget {
 getAppBar(int currentScreenIndex) {
   switch (currentScreenIndex) {
     case 1:
-      return AppBar(
-        elevation: 0.8,
-        backgroundColor: Colors.white,
-        title: const Center(
-          child: Text(
-            "CART",
-            style: TextStyle(color: Colors.black),
-          ),
+      return PreferredSize(
+        preferredSize: const Size.fromHeight(50.0),
+        child: Consumer<ColorModeState>(
+          builder: (context, cart, child) {
+            return AppBar(
+              automaticallyImplyLeading: false,
+              backgroundColor: cart.getBackgrundColor(),
+              title: Center(
+                child: Text(
+                  "CART",
+                  style: TextStyle(
+                      color: cart.getItemColor(),
+                      fontSize: 26,
+                      fontWeight: FontWeight.normal),
+                ),
+              ),
+            );
+          },
         ),
       );
 
@@ -94,7 +104,7 @@ getAppBar(int currentScreenIndex) {
               backgroundColor: cart.getBackgrundColor(),
               title: Center(
                 child: Text(
-                  "Settings",
+                  "SETTINGS",
                   style: TextStyle(
                       color: cart.getItemColor(),
                       fontSize: 26,
