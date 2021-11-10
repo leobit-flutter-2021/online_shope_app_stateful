@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:online_shop_app/pages/store/constant.dart';
 import 'package:online_shop_app/colors/colors.dart';
 
 class CartPage extends StatefulWidget {
+  const CartPage({Key? key}) : super(key: key);
+
   @override
   _CartPageState createState() => _CartPageState();
 }
@@ -45,7 +46,7 @@ class _CartPageState extends State<CartPage> {
                       children: [
                         Text(
                           cartList[index]['name'],
-                          style: TextStyle(fontSize: 22),
+                          style: const TextStyle(fontSize: 22),
                         ),
                         const SizedBox(
                           height: 10,
@@ -125,7 +126,8 @@ class _CartPageState extends State<CartPage> {
             child: Center(
               child: Text(
                 "Buy this".toUpperCase(),
-                style: const TextStyle(color: white, fontWeight: FontWeight.bold),
+                style:
+                    const TextStyle(color: white, fontWeight: FontWeight.bold),
               ),
             ),
           ),
