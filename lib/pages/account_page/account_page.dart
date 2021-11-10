@@ -1,5 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:online_shop_app/pages/account_page/links.dart';
+import 'package:provider/provider.dart';
+
+import '../../state.dart';
 
 class AccountPage extends StatefulWidget {
   const AccountPage({Key? key}) : super(key: key);
@@ -9,113 +15,127 @@ class AccountPage extends StatefulWidget {
 }
 
 class _AccountPageState extends State<AccountPage> {
+  File? image;
+  Future getImage() async {
+    final image = await ImagePicker.platform.pickImage(
+        source: ImageSource.camera, preferredCameraDevice: CameraDevice.rear);
+    if (image == null) return;
+    final imageTemporary = File(image.path);
+    setState(() {
+      this.image = imageTemporary;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
+    return Consumer<ColorModeState>(builder: (context, cart, child){
+      return Scaffold(
+      backgroundColor: cart.getBackgrundColor(),
       body: getBody(),
     );
+    });
 
   }
 
   Widget getBody() {
     return ListView(
         children: [
-
-          Padding(
-            padding: const EdgeInsets.only(left: 20.0, right: 20.0, top: 20.0, bottom: 20.0),
-            child: Row(
-              children: [
-                Container(
-                    width: 130,
-                    height: 130,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        image: const DecorationImage(
-                            image: NetworkImage(profileUrl), fit: BoxFit.cover))
-                ),
-                const SizedBox(
-                  width: 20,
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      "Joe Wittenbreder",
-                      style: TextStyle(fontSize: 25, fontWeight: FontWeight.w400),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Text(
-                        "2-year member",
-                        style: TextStyle(fontSize: 13, color: Colors.black.withOpacity(0.7))
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    TextButton(
-                        style: TextButton.styleFrom(
-                          padding: const EdgeInsets.all(16.0),
-                          primary: Colors.white,
-                          backgroundColor: Colors.black,
-                        ),
-                        onPressed: () => {},
-                        child: const Text('Edit profile', style: TextStyle(fontSize: 20, color: Colors.white))
-                    )
-                  ],
-                ),
-              ],
-            ),
-          ),
+          Consumer<ColorModeState>(builder: (context, cart, child) {
+            return Padding(
+              padding: const EdgeInsets.only(
+                  left: 20.0, right: 20.0, top: 20.0, bottom: 20.0),
+              child: Row(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(8.0),
+                    child: image != null ? Image.file(image!, width:130, height: 130, fit: BoxFit.cover) : Image.network(profileUrl, width:130, height: 130, fit: BoxFit.cover),
+                  ),
+                  const SizedBox(
+                    width: 20,
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Joe Wittenbreder",
+                        style: TextStyle(
+                            fontSize: 25, fontWeight: FontWeight.w400, color: cart.getItemColor()),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                          "2-year member",
+                          style: TextStyle(fontSize: 13, color: cart.getItemColor().withOpacity(0.7))
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      TextButton(
+                          style: TextButton.styleFrom(
+                            padding: const EdgeInsets.all(16.0),
+                            primary: Colors.white,
+                            backgroundColor: cart.getButtonColor(),
+                          ),
+                          onPressed: getImage,
+                          child: const Text('Set another image',
+                              style: TextStyle(fontSize: 20, color: Colors.white))
+                      )
+                    ],
+                  ),
+                ],
+              ),
+            );
+          }),
           const SizedBox(
             height: 40,
           ),
-          Padding(
+          Consumer<ColorModeState>(builder: (context, cart, child) {
+            return Padding(
             padding: const EdgeInsets.only(left: 20, right: 20),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Row(
-                  children: const [
-                    Icon(Icons.shopping_basket, size: 30),
-                    SizedBox(
+                  children: [
+                    Icon(Icons.shopping_basket, size: 30, color: cart.getItemColor()),
+                    const SizedBox(
                       width: 10,
                     ),
                     Text(
                       "Orders",
-                      style: TextStyle(fontSize: 17),
+                      style: TextStyle(fontSize: 17, color: cart.getItemColor()),
                     )
                   ],
                 ),
                 Row(
-                  children: const [
-                    Icon(Icons.location_on_sharp, size: 30),
-                    SizedBox(
+                  children: [
+                    Icon(Icons.location_on_sharp, size: 30, color: cart.getItemColor()),
+                    const SizedBox(
                       width: 10,
                     ),
                     Text(
                       "My Address",
-                      style: TextStyle(fontSize: 17),
+                      style: TextStyle(fontSize: 17, color: cart.getItemColor()),
                     )
                   ],
                 ),
                 Row(
-                  children: const [
-                    Icon(Icons.settings, size: 30),
-                    SizedBox(
+                  children: [
+                    Icon(Icons.settings, size: 30, color: cart.getItemColor()),
+                    const SizedBox(
                       width: 10,
                     ),
                     Text(
                       "Settings",
-                      style: TextStyle(fontSize: 17),
+                      style: TextStyle(fontSize: 17, color: cart.getItemColor()),
                     )
                   ],
                 ),
               ],
             ),
-          ),
+          );
+          }),
           const SizedBox(
             height: 30,
           ),
@@ -125,42 +145,44 @@ class _AccountPageState extends State<AccountPage> {
           const SizedBox(
             height: 20,
           ),
-          Padding(
-              padding: const EdgeInsets.only(left: 20, right: 20),
-              child: Column(
-                  children: List.generate(accountList.length, (index) {
-                    return Padding(
-                        padding: const EdgeInsets.only(bottom: 15),
-                        child: Column(
-                            children: [
-                              Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children:[
-                                    Text(
-                                      accountList[index],
-                                      style: const TextStyle(fontSize: 16),
-                                    ),
-                                    Icon(
-                                      Icons.arrow_forward_ios,
-                                      color: Colors.black.withOpacity(0.5),
-                                      size: 17,
-                                    )
+          Consumer<ColorModeState>(builder: (context, cart, child){
+            return Padding(
+                padding: const EdgeInsets.only(left: 20, right: 20),
+                child: Column(
+                    children: List.generate(accountList.length, (index) {
+                      return Padding(
+                          padding: const EdgeInsets.only(bottom: 15),
+                          child: Column(
+                              children: [
+                                Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children:[
+                                      Text(
+                                        accountList[index],
+                                        style: TextStyle(fontSize: 16, color: cart.getItemColor()),
+                                      ),
+                                      Icon(
+                                        Icons.arrow_forward_ios,
+                                        color: cart.getItemColor().withOpacity(0.5),
+                                        size: 17,
+                                      )
 
-                                  ]
-                              ),
-                              const SizedBox(
-                                height: 15,
-                              ),
-                              Divider(
-                                color: Colors.grey.withOpacity(0.8),
-                              )
-                            ]
-                        )
-                    );
-                  }
-                  )
-              )
-          )
+                                    ]
+                                ),
+                                const SizedBox(
+                                  height: 15,
+                                ),
+                                Divider(
+                                  color: Colors.grey.withOpacity(0.8),
+                                )
+                              ]
+                          )
+                      );
+                    }
+                    )
+                )
+            );
+          })//here
         ]
     );
   }
